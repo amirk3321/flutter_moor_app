@@ -1,6 +1,6 @@
 # flutter_moor_db
 
-![ezgif com-video-to-gif](https://user-images.githubusercontent.com/10207753/61901135-87082c80-af38-11e9-95a9-bde863f786ea.gif)
+![ezgif com-crop](https://user-images.githubusercontent.com/10207753/61901289-d5b5c680-af38-11e9-8106-7280983aadac.gif)
 
 
 A new Flutter project.
