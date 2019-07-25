@@ -1,5 +1,8 @@
 # flutter_moor_db
 
+![ezgif com-video-to-gif](https://user-images.githubusercontent.com/10207753/61901135-87082c80-af38-11e9-95a9-bde863f786ea.gif)
+
+
 A new Flutter project.
 
 ## Getting Started
