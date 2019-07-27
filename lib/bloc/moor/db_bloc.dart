@@ -26,6 +26,8 @@ class DbBloc extends Bloc<DbEvent, DbState> {
       yield* _mapDeleteEventToState(event);
     }else if(event is UpdateEvent){
       yield* _mapUpdateEventToState(event);
+    }else if(event is SwitchButtonEvent){
+      yield* _mapSwitchButtonEventToState();
     }
   }
 
@@ -35,10 +37,9 @@ class DbBloc extends Bloc<DbEvent, DbState> {
 
  Stream<DbState> _mapTaskAllFetchToState() async*{
    yield LoadingState();
+
     try{
-
       final tasks =await _repository.getAllTasks();
-
       yield LoadedState(task: tasks);
     }catch(_){
       yield ErrorState();
@@ -51,5 +52,16 @@ class DbBloc extends Bloc<DbEvent, DbState> {
 
   Stream<DbState> _mapUpdateEventToState(UpdateEvent event)  async*{
     await _repository.updateTasks(event.task);
+  }
+
+  Stream<DbState> _mapSwitchButtonEventToState() async* {
+    yield LoadingState();
+
+    try{
+      final tasks =await _repository.getAllCompletedTasks();
+      yield LoadedState(task: tasks);
+    }catch(_){
+      yield ErrorState();
+    }
   }
 }

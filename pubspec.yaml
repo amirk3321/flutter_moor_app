@@ -23,6 +23,7 @@ dependencies:
   equatable: ^0.3.0
   moor_flutter: ^1.6.0
   flutter_slidable: ^0.5.3
+  moor: ^1.6.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

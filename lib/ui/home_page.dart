@@ -11,6 +11,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+
+  bool showCompleted=false;
   DbBloc _bloc;
   List<Task> task;
   DateTime newTaskDate;
@@ -18,7 +20,14 @@ class HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _nameController = TextEditingController();
+    _nameController = TextEditingController(text: "");
+    setState(() {
+      if (showCompleted==true){
+        print("true :$showCompleted");
+      }else{
+        print("false :$showCompleted");
+      }
+    });
     super.initState();
   }
 
@@ -28,6 +37,9 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
         appBar: AppBar(
           title: Text("HomePage"),
+          actions: <Widget>[
+            _buildSwitchButton()
+          ],
         ),
         body: BlocBuilder(
           bloc: _bloc,
@@ -80,8 +92,8 @@ class HomePageState extends State<HomePage> {
           color: Colors.red,
           icon: Icons.delete,
           onTap: () {
-
             _bloc.dispatch(DeleteEvent(task: itemsTask));
+
             _bloc.dispatch(TaskAllFetch());
           },
         ),
@@ -90,7 +102,7 @@ class HomePageState extends State<HomePage> {
           color: Colors.green,
           icon: Icons.update,
           onTap: () {
-            _showDialog(controller: _nameController,task: itemsTask);
+            _showDialog(controller: _nameController, task: itemsTask);
           },
         ),
       ],
@@ -98,7 +110,10 @@ class HomePageState extends State<HomePage> {
           value: itemsTask.completed,
           title: Text(itemsTask.name),
           subtitle: Text(itemsTask.dueDate?.toString() ?? 'no date'),
-          onChanged: (newValue) {}),
+          onChanged: (newValue) {
+            _bloc.dispatch(UpdateEvent(task: itemsTask.copyWith(completed: newValue)));
+            _bloc.dispatch(TaskAllFetch());
+          }),
     );
   }
 
@@ -110,32 +125,32 @@ class HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(30),
         color: Colors.white,
       ),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
-            hintText: hint,
-            border: InputBorder.none,
-            suffixIcon: Container(
-                decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.all(Radius.circular(30))),
-                child: IconButton(
-                    icon: Icon(icon),
-                    onPressed: () async {
-                      newTaskDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2010),
-                        lastDate: DateTime(2050),
-                      );
-                    }))),
+          hintText: hint,
+          border: InputBorder.none,
+          suffixIcon: Container(
+            decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.all(Radius.circular(30))),
+            child: IconButton(
+                icon: Icon(icon),
+                onPressed: () async {
+                  newTaskDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2010),
+                    lastDate: DateTime(2050),
+                  );
+                }),
+          ),
+        ),
       ),
     );
   }
 
-//test//
-
-  _showDialog({controller,task}) async {
+  _showDialog({controller, task}) async {
     await showDialog<String>(
       context: context,
       // false = user must tap button, true = tap outside dialog
@@ -144,10 +159,7 @@ class HomePageState extends State<HomePage> {
           title: Text('Update Task'),
           content: Container(
             height: 300,
-            width: MediaQuery
-                .of(context)
-                .size
-                .width / 0.50,
+            width: MediaQuery.of(context).size.width / 0.50,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -173,13 +185,11 @@ class HomePageState extends State<HomePage> {
               child: Text('Add'),
               onPressed: () {
                 if (_nameController.text.isNotEmpty) {
-                  final task1 = Task(
-                      name: _nameController.text,
-                      dueDate: newTaskDate ?? null
-                  );
-                  _bloc.dispatch(
-                      UpdateEvent(task: task.copyWith(name: _nameController.text,dueDate:newTaskDate ?? null ))
-                  );
+
+                  _bloc.dispatch(UpdateEvent(
+                      task: task.copyWith(
+                          name: _nameController.text,
+                          dueDate: newTaskDate ?? null)));
                   _bloc.dispatch(TaskAllFetch());
                   _nameController.clear();
                   newTaskDate = null;
@@ -187,14 +197,36 @@ class HomePageState extends State<HomePage> {
                 } else {
                   Scaffold.of(context)
                     ..hideCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text("Failed is Empty"),
-                      backgroundColor: Colors.red,));
+                    ..showSnackBar(SnackBar(
+                      content: Text("Failed is Empty"),
+                      backgroundColor: Colors.red,
+                    ));
                 }
               },
             ),
           ],
         );
       },
+    );
+  }
+
+ Row _buildSwitchButton(){
+    return Row(
+      children: <Widget>[
+        Text("Completed Task"),
+        Switch(
+            activeColor: Colors.red,
+            value: showCompleted, onChanged: (newValue){
+          setState(() {
+            showCompleted=newValue;
+            if (showCompleted){
+              _bloc.dispatch(SwitchButtonEvent());
+            }else{
+              _bloc.dispatch(TaskAllFetch());
+            }
+          });
+        })
+      ],
     );
   }
 }

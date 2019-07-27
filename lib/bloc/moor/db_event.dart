@@ -29,7 +29,10 @@ class UpdateEvent extends DbEvent{
   @override
   String toString() => "UpdateEvent";
 }
-
+class SwitchButtonEvent extends DbEvent{
+  @override
+  String toString() => "SwitchButtonEvent";
+}
 //notify the bloc delete the task form the db
 class DeleteEvent extends DbEvent{
   Task task;

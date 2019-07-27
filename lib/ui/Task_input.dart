@@ -36,19 +36,27 @@ class InputTaskState extends State<InputTask>{
   }
   Expanded _buildTextField(BuildContext context) {
     return Expanded(
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(hintText: 'Task Name'),
-        onSubmitted: (inputName) {
-          final _bloc = BlocProvider.of<DbBloc>(context);
-          final task = Task(
-            name: inputName,
-            dueDate: newTaskDate,
-          );
-          _bloc.dispatch(InsertEvent(task: task));
-          _bloc.dispatch(TaskAllFetch());
-          resetValuesAfterSubmit();
-        },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 15  ,vertical: 5),
+        decoration: BoxDecoration(color: Colors.grey[300],borderRadius:BorderRadius.circular(10)),
+        child: TextField(
+          controller: controller,
+          decoration: InputDecoration(hintText: 'Insert task ',border: InputBorder.none,
+          suffixIcon: IconButton(icon: Icon(Icons.send), onPressed: (){
+
+            if (controller.text.isNotEmpty){
+              final _bloc = BlocProvider.of<DbBloc>(context);
+              final task = Task(
+                name: controller.text,
+                dueDate: newTaskDate,
+              );
+              _bloc.dispatch(InsertEvent(task: task));
+              _bloc.dispatch(TaskAllFetch());
+              resetValuesAfterSubmit();
+            }
+
+        })),
+        ),
       ),
     );
   }
@@ -56,7 +64,7 @@ class InputTaskState extends State<InputTask>{
 
   IconButton _buildDateButton(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.calendar_today),
+      icon: Icon(Icons.calendar_today,color: Colors.purple,),
       onPressed: () async {
         newTaskDate = await showDatePicker(
           context: context,

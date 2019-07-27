@@ -6,18 +6,19 @@ class Repository{
 
 
   //AppDatabase instance
-  AppDatabase db=AppDatabase();
+  TaskDao _dao =TaskDao(AppDatabase());
 
 
-  Future<List<Task>> getAllTasks() => db.getAllTasks();
+  Future<List<Task>> getAllTasks() => _dao.getAllTasks();
 
-  Stream<List<Task>> getAllWatch() =>db.watchAllTasks();
+  Future<List<Task>> getAllCompletedTasks() => _dao.getAllCompletedTasks();
 
-  Future insertTasks(Task task) => db.insertTask(task);
+  Future insertTasks(Task task) => _dao.insertTask(task);
 
-  Future updateTasks(Task task) => db.updateTask(task);
+  Future updateTasks(Task task) => _dao.updateTask(task);
 
-  Future deleteTasks(Task task) => db.deleteTask(task);
+  Future deleteTasks(Task task) => _dao.deleteTask(task);
+
 
 
 }
